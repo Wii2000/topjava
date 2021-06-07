@@ -11,7 +11,7 @@
             text-align: left;
         }
         .button {
-            font-size: 50px;
+            width: 50px;
         }
     </style>
 </head>
@@ -29,7 +29,7 @@
     <input type="text" id="description" name="description" value="${meal.description}"><br><br>
 
     <label for="calories">Calories:</label>
-    <input type="text" id="calories" name="calories" value="${meal.calories}"><br><br>
+    <input type="number" id="calories" name="calories" value="${meal.calories}"><br><br>
 
     <input class="button" type="submit" value="${empty meal.id ? 'Add' : 'Save'}">
     <a href="meals">Cancel</a>
