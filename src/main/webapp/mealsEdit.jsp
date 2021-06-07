@@ -3,7 +3,7 @@
 
 <html>
 <head>
-    <title>Title</title>
+    <title>Meals editor</title>
     <style>
         label {
             display: inline-block;
