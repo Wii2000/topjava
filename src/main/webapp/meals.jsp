@@ -23,6 +23,28 @@
     <h2>Meals</h2>
     <a href="meals?action=create">Add Meal</a>
     <br><br>
+    <form method="post" action="meals">
+        <input type="hidden" type="text" name="action" value="filter"><br>
+        <table>
+            <tr>
+                <td>
+                    <label>From date(include)</label><br>
+                    <input type="date" name="startDate" value="${startDate}"><br>
+                    <label>Before date(include)</label><br>
+                    <input type="date" name="endDate" value="${endDate}"><br><br>
+                </td>
+                <td style="width: 50px"></td>
+                <td>
+                    <label>From time(include)</label><br>
+                    <input type="time" name="startTime" value="${startTime}"><br>
+                    <label>Before time(exclude)</label><br>
+                    <input type="time" name="endTime" value="${endTime}"><br><br>
+                </td>
+            </tr>
+        </table>
+        <button type="submit">Filter</button>
+    </form>
+    <br><br>
     <table border="1" cellpadding="8" cellspacing="0">
         <thead>
         <tr>
@@ -34,7 +56,7 @@
         </tr>
         </thead>
         <c:forEach items="${meals}" var="meal">
-            <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.MealTo"/>
+            <jsp:useBean id="meal" type="ru.javawebinar.topjava.to.MealTo"/>
             <tr class="${meal.excess ? 'excess' : 'normal'}">
                 <td>
                         <%--${meal.dateTime.toLocalDate()} ${meal.dateTime.toLocalTime()}--%>
