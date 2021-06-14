@@ -23,22 +23,22 @@
     <h2>Meals</h2>
     <a href="meals?action=create">Add Meal</a>
     <br><br>
-    <form method="post" action="meals">
+    <form method="get" action="meals">
         <input type="hidden" type="text" name="action" value="filter"><br>
         <table>
             <tr>
                 <td>
                     <label>From date(include)</label><br>
-                    <input type="date" name="startDate" value="${startDate}"><br>
+                    <input type="date" name="startDate" value="${param.startDate}"><br>
                     <label>Before date(include)</label><br>
-                    <input type="date" name="endDate" value="${endDate}"><br><br>
+                    <input type="date" name="endDate" value="${param.endDate}"><br><br>
                 </td>
                 <td style="width: 50px"></td>
                 <td>
                     <label>From time(include)</label><br>
-                    <input type="time" name="startTime" value="${startTime}"><br>
+                    <input type="time" name="startTime" value="${param.startTime}"><br>
                     <label>Before time(exclude)</label><br>
-                    <input type="time" name="endTime" value="${endTime}"><br><br>
+                    <input type="time" name="endTime" value="${param.endTime}"><br><br>
                 </td>
             </tr>
         </table>

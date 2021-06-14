@@ -19,8 +19,8 @@ import java.util.Objects;
 public class MealServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
 
-    ConfigurableApplicationContext appCtx;
-    MealRestController controller;
+    private ConfigurableApplicationContext appCtx;
+    private MealRestController controller;
 
     @Override
     public void init() {
@@ -30,7 +30,6 @@ public class MealServlet extends HttpServlet {
 
     @Override
     public void destroy() {
-        super.destroy();
         appCtx.close();
     }
 
@@ -41,22 +40,6 @@ public class MealServlet extends HttpServlet {
     ) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         String id = request.getParameter("id");
-        String action = request.getParameter("action");
-
-        if (action != null && action.equals("filter")) {
-            log.info("getFiltered");
-            String startDate = request.getParameter("startDate");
-            String endDate = request.getParameter("endDate");
-            String startTime = request.getParameter("startTime");
-            String endTime = request.getParameter("endTime");
-            request.setAttribute("meals", controller.getFiltered(startDate, endDate, startTime, endTime));
-            request.setAttribute("startDate", startDate);
-            request.setAttribute("endDate", endDate);
-            request.setAttribute("startTime", startTime);
-            request.setAttribute("endTime", endTime);
-            request.getRequestDispatcher("/meals.jsp").forward(request, response);
-            return;
-        }
 
         Meal meal = new Meal(
                 id.isEmpty() ? null : Integer.valueOf(id),
@@ -96,6 +79,17 @@ public class MealServlet extends HttpServlet {
                         controller.get(getId(request));
                 request.setAttribute("meal", meal);
                 request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
+                break;
+            case "filter":
+                log.info("getFiltered");
+                request.setAttribute("meals", controller.getFiltered(
+                        request.getParameter("startDate"),
+                        request.getParameter("endDate"),
+                        request.getParameter("startTime"),
+                        request.getParameter("endTime")
+                        )
+                );
+                request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
             case "all":
             default:
