@@ -17,7 +17,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.UserTestData.ADMIN_ID;
@@ -67,13 +66,13 @@ public class MealServiceTest {
                 LocalDate.of(2021, 06, 14),
                 USER_ID
         );
-        assertThat(betweenInclusive).containsExactly(USER_MEAL_3, USER_MEAL_2, USER_MEAL_1);
+        assertMatch(betweenInclusive, USER_MEAL_3, USER_MEAL_2, USER_MEAL_1);
     }
 
     @Test
     public void getAll() {
         List<Meal> all = service.getAll(ADMIN_ID);
-        assertThat(all).containsExactly(ADMIN_MEAL_2, ADMIN_MEAL_1);
+        assertMatch(all, ADMIN_MEAL_2, ADMIN_MEAL_1);
     }
 
     @Test
@@ -90,12 +89,12 @@ public class MealServiceTest {
 
     @Test
     public void create() {
-        Meal created = service.create(MealTestData.getNew(), 100000);
+        Meal created = service.create(MealTestData.getNew(), USER_ID);
         int newId = created.getId();
         Meal newMeal = MealTestData.getNew();
         newMeal.setId(newId);
         assertMatch(created, newMeal);
-        assertMatch(service.get(newId, 100000), newMeal);
+        assertMatch(service.get(newId, USER_ID), newMeal);
     }
 
     @Test
