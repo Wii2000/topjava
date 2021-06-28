@@ -36,7 +36,7 @@ public class MealServiceTest {
 
     private static final Logger logger = LoggerFactory.getLogger(MealServiceTest.class);
 
-    private static StringBuilder timeResults = new StringBuilder();
+    private static final StringBuilder timeResults = new StringBuilder();
 
     @Autowired
     private MealService service;
@@ -45,8 +45,8 @@ public class MealServiceTest {
     public Stopwatch stopwatch = new Stopwatch() {
         @Override
         protected void finished(long nanos, Description description) {
-            String msg = String.format("%s - %d microseconds",
-                    description.getMethodName(), TimeUnit.NANOSECONDS.toMicros(nanos));
+            String msg = String.format("%-25s - %d ms",
+                    description.getMethodName(), TimeUnit.NANOSECONDS.toMillis(nanos));
             timeResults.append("\n");
             timeResults.append(msg);
             logger.info(msg);
