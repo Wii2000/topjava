@@ -1,5 +1,5 @@
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/974b86912f134aab8167a741bc220421)](https://www.codacy.com/gh/JavaWebinar/topjava/dashboard)
-[![Build Status](https://api.travis-ci.com/JavaWebinar/topjava.svg?branch=master)](https://travis-ci.com/JavaWebinar/topjava)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/d39d9a4d406e448a86b864b8487e64c9)](https://www.codacy.com/gh/Wii2000/topjava/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Wii2000/topjava&amp;utm_campaign=Badge_Grade)
+[![Build Status](https://travis-ci.com/Wii2000/topjava.svg?branch=master)](https://travis-ci.com/Wii2000/topjava)
 
 Java Enterprise Online Project 
 ===============================
