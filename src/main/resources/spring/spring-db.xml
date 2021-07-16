@@ -66,6 +66,14 @@
         <bean id="namedJdbcTemplate" class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate">
             <constructor-arg ref="jdbcTemplate"/>
         </bean>
+
+        <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+            <constructor-arg ref="dataSource"/>
+        </bean>
+    </beans>
+
+    <beans profile="jpa, datajpa, jdbc">
+        <tx:annotation-driven/>
     </beans>
 
     <beans profile="jpa,datajpa">
@@ -100,8 +108,6 @@
                 </bean>
             </property>
         </bean>
-
-        <tx:annotation-driven/>
 
         <!-- Transaction manager for a single JPA EntityManagerFactory (alternative to JTA) -->
         <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager"
