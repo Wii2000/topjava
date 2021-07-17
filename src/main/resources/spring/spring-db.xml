@@ -18,6 +18,8 @@
         <jdbc:script encoding="utf-8" location="classpath:db/populateDB.sql"/>
     </jdbc:initialize-database>
 
+    <tx:annotation-driven/>
+
     <!-- Choose profile from (hsqldb/ postgres) and (jdbc/ datajpa/ jpa) -->
 
     <beans profile="hsqldb">
@@ -70,10 +72,6 @@
         <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
             <constructor-arg ref="dataSource"/>
         </bean>
-    </beans>
-
-    <beans profile="jpa, datajpa, jdbc">
-        <tx:annotation-driven/>
     </beans>
 
     <beans profile="jpa,datajpa">

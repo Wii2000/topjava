@@ -5,17 +5,13 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <html>
-<head>
-    <title><spring:message code="meal.title"/></title>
-</head>
 
 <jsp:include page="fragments/headTag.jsp"/>
 <body>
 <jsp:include page="fragments/bodyHeader.jsp"/>
 <section>
-    <h2>Meals</h2>
-    <form method="get" action="meals">
-        <input type="hidden" name="action" value="filter">
+    <h2><spring:message code="meal.title"/></h2>
+    <form method="get" action="${pageContext.request.contextPath}/meals/filter">
         <dl>
             <dt><spring:message code="meal.fromDate"/>:</dt>
             <dd><input type="date" name="startDate" value="${param.startDate}"></dd>
@@ -32,10 +28,10 @@
             <dt><spring:message code="meal.toTime"/>:</dt>
             <dd><input type="time" name="endTime" value="${param.endTime}"></dd>
         </dl>
-        <button type="submit">Filter</button>
+        <button type="submit"><spring:message code="common.filter"/></button>
     </form>
     <hr/>
-    <a href="meals?action=create">Add Meal</a>
+    <a href="${pageContext.request.contextPath}/meals/create"><spring:message code="meal.add"/></a>
     <br><br>
     <table border="1" cellpadding="8" cellspacing="0">
         <thead>
@@ -58,11 +54,14 @@
                 </td>
                 <td>${meal.description}</td>
                 <td>${meal.calories}</td>
-                <td><a href="meals?action=update&id=${meal.id}">Update</a></td>
                 <td>
-                    <form method="post" action="meals/delete">
+                    <a href="${pageContext.request.contextPath}/meals/update?id=${meal.id}">
+                    <spring:message code="common.update"/></a>
+                </td>
+                <td>
+                    <form method="post" action="${pageContext.request.contextPath}/meals/delete">
                         <input type="hidden" name="id" value="${meal.id}">
-                        <button type="submit">Delete</button>
+                        <button type="submit"><spring:message code="common.delete"/></button>
                     </form>
                 </td>
             </tr>

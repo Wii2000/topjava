@@ -3,7 +3,9 @@ package ru.javawebinar.topjava.repository.jdbc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -13,16 +15,38 @@ import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Repository
 @Transactional(readOnly = true)
 public class JdbcUserRepository extends AbstractJdbcRepository implements UserRepository {
+
+    private static final BeanPropertyRowMapper<User> ROW_MAPPER = BeanPropertyRowMapper.newInstance(User.class);
+
+    private static final ResultSetExtractor<List<User>> userWithRolesExtractor = rs -> {
+        Map<Integer, User> users = new LinkedHashMap<>();
+        User currentUser;
+        String role;
+        int rowNum = 0;
+
+        while (rs.next()) {
+            role = rs.getString("role");
+
+            if ((currentUser = users.get(rs.getInt("id"))) != null) {
+                currentUser.getRoles().add(Role.valueOf(role));
+            } else {
+                currentUser = ROW_MAPPER.mapRow(rs, rowNum);
+                currentUser.setRoles(role != null ? EnumSet.of(Role.valueOf(role)) : EnumSet.noneOf(Role.class));
+                users.put(currentUser.getId(), currentUser);
+            }
+
+            rowNum++;
+        }
+
+        return new ArrayList<>(users.values());
+    };
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -30,13 +54,11 @@ public class JdbcUserRepository extends AbstractJdbcRepository implements UserRe
 
     private final SimpleJdbcInsert insertUser;
 
-    private final UserWithRolesExtractor userWithRolesExtractor;
 
     @Autowired
     public JdbcUserRepository(
             JdbcTemplate jdbcTemplate,
-            NamedParameterJdbcTemplate namedParameterJdbcTemplate,
-            UserWithRolesExtractor userWithRolesExtractor
+            NamedParameterJdbcTemplate namedParameterJdbcTemplate
     ) {
         this.insertUser = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("users")
@@ -44,16 +66,12 @@ public class JdbcUserRepository extends AbstractJdbcRepository implements UserRe
 
         this.jdbcTemplate = jdbcTemplate;
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
-        this.userWithRolesExtractor = userWithRolesExtractor;
     }
 
     @Override
     @Transactional
     public User save(User user) {
-        Set<ConstraintViolation<User>> constraintViolations = validator.validate(user);
-        if (!constraintViolations.isEmpty()) {
-            throw new ConstraintViolationException(constraintViolations);
-        }
+        validate(user);
 
         BeanPropertySqlParameterSource parameterSource = new BeanPropertySqlParameterSource(user);
 
@@ -71,19 +89,21 @@ public class JdbcUserRepository extends AbstractJdbcRepository implements UserRe
         }
 
         List<Role> roles = List.copyOf(user.getRoles());
-        jdbcTemplate.batchUpdate(
-                "INSERT INTO user_roles (user_id, role) VALUES (?,?)",
-                new BatchPreparedStatementSetter() {
-                    public void setValues(PreparedStatement ps, int i) throws SQLException {
-                        ps.setInt(1, user.getId());
-                        ps.setString(2, roles.get(i).toString());
-                    }
+        if (!roles.isEmpty()) {
+            jdbcTemplate.batchUpdate(
+                    "INSERT INTO user_roles (user_id, role) VALUES (?,?)",
+                    new BatchPreparedStatementSetter() {
+                        public void setValues(PreparedStatement ps, int i) throws SQLException {
+                            ps.setInt(1, user.getId());
+                            ps.setString(2, roles.get(i).name());
+                        }
 
-                    public int getBatchSize() {
-                        return roles.size();
+                        public int getBatchSize() {
+                            return roles.size();
+                        }
                     }
-                }
-        );
+            );
+        }
 
         return user;
     }
@@ -97,7 +117,7 @@ public class JdbcUserRepository extends AbstractJdbcRepository implements UserRe
     @Override
     public User get(int id) {
         List<User> users = jdbcTemplate.query("""
-                SELECT u.id, u.name, u.email, u.password, u.registered, u.enabled, u.calories_per_day, ur.role AS roles
+                SELECT u.id, u.name, u.email, u.password, u.registered, u.enabled, u.calories_per_day, ur.role AS role
                 FROM users u
                 LEFT JOIN user_roles ur ON u.id=ur.user_id
                 WHERE id=?
@@ -108,7 +128,7 @@ public class JdbcUserRepository extends AbstractJdbcRepository implements UserRe
     @Override
     public User getByEmail(String email) {
         List<User> users = jdbcTemplate.query("""
-                SELECT u.id, u.name, u.email, u.password, u.registered, u.enabled, u.calories_per_day, ur.role AS roles
+                SELECT u.id, u.name, u.email, u.password, u.registered, u.enabled, u.calories_per_day, ur.role AS role
                 FROM users u
                 LEFT JOIN user_roles ur ON u.id=ur.user_id
                 WHERE email=?
@@ -119,7 +139,7 @@ public class JdbcUserRepository extends AbstractJdbcRepository implements UserRe
     @Override
     public List<User> getAll() {
         return jdbcTemplate.query("""
-                SELECT u.id, u.name, u.email, u.password, u.registered, u.enabled, u.calories_per_day, ur.role AS roles
+                SELECT u.id, u.name, u.email, u.password, u.registered, u.enabled, u.calories_per_day, ur.role AS role
                 FROM users u
                 LEFT JOIN user_roles ur ON u.id=ur.user_id
                 ORDER BY name, email

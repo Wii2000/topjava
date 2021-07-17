@@ -23,6 +23,10 @@ public class UserTestData {
         return new User(null, "New", "new@gmail.com", "newPass", 1555, false, new Date(), Set.of(Role.USER, Role.ADMIN));
     }
 
+    public static User getNewWithoutRoles() {
+        return new User(null, "New", "new@gmail.com", "newPass", 1555, false, new Date(), null);
+    }
+
     public static User getUpdated() {
         User updated = new User(user);
         updated.setEmail("update@gmail.com");
