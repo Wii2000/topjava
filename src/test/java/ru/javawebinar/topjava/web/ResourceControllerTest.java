@@ -10,7 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class ResourceControllerTest extends AbstractControllerTest {
     @Test
-    void getUsers() throws Exception {
+    void getCss() throws Exception {
         perform(get("/resources/css/style.css"))
                 .andDo(print())
                 .andExpect(status().isOk())

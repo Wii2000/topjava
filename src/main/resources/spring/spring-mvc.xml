@@ -54,8 +54,8 @@
         <property name="registerDefaultFormatters" value="false" />
         <property name="formatters">
             <set>
-                <bean class="ru.javawebinar.topjava.util.StringToLocalDateFormatter"/>
-                <bean class="ru.javawebinar.topjava.util.StringToLocalTimeFormatter"/>
+                <bean class="ru.javawebinar.topjava.util.formatter.StringToLocalDateFormatter"/>
+                <bean class="ru.javawebinar.topjava.util.formatter.StringToLocalTimeFormatter"/>
             </set>
         </property>
     </bean>

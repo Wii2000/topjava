@@ -25,14 +25,20 @@ public class MealRestController extends AbstractMealController {
         return super.getAll();
     }
 
+    @Override
+    @GetMapping("/{id}")
+    public Meal get(@PathVariable int id) {
+        return super.get(id);
+    }
+
     @GetMapping("/filter")
-    public List<MealTo> filter(
+    public List<MealTo> getBetween(
             @RequestParam(required = false) LocalDate startDate,
             @RequestParam(required = false) LocalDate endDate,
             @RequestParam(required = false) LocalTime startTime,
             @RequestParam(required = false) LocalTime endTime
     ) {
-        return getBetween(startDate, startTime, endDate, endTime);
+        return super.getBetween(startDate, startTime, endDate, endTime);
     }
 
     @Override
@@ -50,7 +56,7 @@ public class MealRestController extends AbstractMealController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Meal> createMeal(@RequestBody Meal meal) {
+    public ResponseEntity<Meal> createWithLocation(@RequestBody Meal meal) {
         Meal created = super.create(meal);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
