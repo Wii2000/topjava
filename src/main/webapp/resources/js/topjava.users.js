@@ -44,4 +44,18 @@ $(function () {
             ]
         })
     );
+
+    $("input:checkbox").click(function () {
+        setActivity($(this).closest('tr').attr("id"), $(this).is(':checked'));
+    });
 });
+
+function setActivity(id, activity) {
+    $.ajax({
+        type: "PUT",
+        url: ctx.ajaxUrl + id + "?activity=" + activity
+    }).done(function () {
+        updateTable();
+        successNoty(activity ? "Record enabled" : "Record disabled");
+    });
+}
