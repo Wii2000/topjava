@@ -1,9 +1,15 @@
 const mealAjaxUrl = "profile/meals/";
-let filterForm;
 
 // https://stackoverflow.com/a/5064235/548473
 const ctx = {
-    ajaxUrl: mealAjaxUrl
+    ajaxUrl: mealAjaxUrl,
+    updateTable: function () {
+        $.ajax({
+            type: "GET",
+            url: mealAjaxUrl + "filter",
+            data: $('#filterForm').serialize()
+        }).done(fillTableByData)
+    }
 };
 
 // $(document).ready(function () {
@@ -34,13 +40,11 @@ $(function () {
             "order": [
                 [
                     0,
-                    "asc"
+                    "desc"
                 ]
             ]
         })
     );
-
-    filterForm = $('#filterForm');
 
     $("#startDate").datetimepicker({
         timepicker: false,
@@ -63,18 +67,7 @@ $(function () {
     });
 });
 
-function filter() {
-    $.ajax({
-        type: "GET",
-        url: ctx.ajaxUrl + "filter",
-        data: filterForm.serialize()
-    }).done(function (data) {
-        ctx.datatableApi.clear().rows.add(data).draw();
-        successNoty("Filtered");
-    });
-}
-
 function resetFilter() {
-    filterForm[0].reset();
-    updateTable();
+    $("#filterForm")[0].reset();
+    $.get(mealAjaxUrl, fillTableByData)
 }

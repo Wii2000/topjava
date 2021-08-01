@@ -89,8 +89,8 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     @Test
     void enable() throws Exception {
         User updated = new User(user);
-        checkActivity(user, false);
-        checkActivity(user, true);
+        checkActivity(updated, false);
+        checkActivity(updated, true);
     }
 
     private void checkActivity(User user, boolean activity) throws Exception {

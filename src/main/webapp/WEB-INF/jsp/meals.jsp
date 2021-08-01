@@ -36,7 +36,7 @@
                 <span class="fa fa-times"></span>
                 <spring:message code="common.cancel"/>
             </button>
-            <button class="btn btn-primary" onclick="filter()">
+            <button class="btn btn-primary" onclick="ctx.updateTable()">
                 <span class="fa fa-filter"></span>
                 <spring:message code="meal.filter"/>
             </button>

@@ -104,7 +104,7 @@ class AdminRestControllerTest extends AbstractControllerTest {
 
     private void checkActivity(User user, boolean activity) throws Exception {
         user.setEnabled(activity);
-        perform(MockMvcRequestBuilders.put(REST_URL + USER_ID)
+        perform(MockMvcRequestBuilders.patch(REST_URL + USER_ID)
                 .param("enable", String.valueOf(activity)))
                 .andDo(print())
                 .andExpect(status().isNoContent());
