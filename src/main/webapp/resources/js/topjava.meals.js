@@ -17,9 +17,30 @@ function clearFilter() {
     $.get(mealAjaxUrl, updateTableByData);
 }
 
+// http://api.jquery.com/jQuery.ajax/#using-converters
+$.ajaxSetup({
+    converters: {
+        "text json": function (stringData) {
+            var json = JSON.parse(stringData);
+            if (typeof json === 'object') {
+                $(json).each(function () {
+                    if (this.hasOwnProperty('dateTime')) {
+                        this.dateTime = this.dateTime.substr(0, 16).replace('T', ' ');
+                    }
+                });
+            }
+            return json;
+        }
+    }
+});
+
 $(function () {
     makeEditable(
         $("#datatable").DataTable({
+            "ajax": {
+                "url": mealAjaxUrl,
+                "dataSrc": ""
+            },
             "paging": false,
             "info": true,
             "columns": [
@@ -33,12 +54,14 @@ $(function () {
                     "data": "calories"
                 },
                 {
-                    "defaultContent": "Edit",
-                    "orderable": false
+                    "orderable": false,
+                    "defaultContent": "",
+                    "render": renderEditBtn
                 },
                 {
-                    "defaultContent": "Delete",
-                    "orderable": false
+                    "orderable": false,
+                    "defaultContent": "",
+                    "render": renderDeleteBtn
                 }
             ],
             "order": [
@@ -46,7 +69,29 @@ $(function () {
                     0,
                     "desc"
                 ]
-            ]
+            ],
+            "createdRow": function (row, data, dataIndex) {
+                $(row).attr("data-mealExcess", data.excess);
+            }
         })
     );
+    $("#dateTime").datetimepicker({
+        format:"Y-m-d H:i",
+    });
+    $("#startDate").datetimepicker({
+        timepicker: false,
+        format:"Y-m-d",
+    });
+    $("#endDate").datetimepicker({
+        timepicker: false,
+        format:"Y-m-d",
+    });
+    $("#startTime").datetimepicker({
+        datepicker: false,
+        format:"H:i",
+    });
+    $("#endTime").datetimepicker({
+        datepicker: false,
+        format:"H:i",
+    });
 });

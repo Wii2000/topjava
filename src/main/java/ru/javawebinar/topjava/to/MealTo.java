@@ -1,18 +1,33 @@
 package ru.javawebinar.topjava.to;
 
+import org.hibernate.validator.constraints.Range;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.beans.ConstructorProperties;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class MealTo extends BaseTo {
 
-    private final LocalDateTime dateTime;
+    @NotNull(message = "{javax.validation.constraints.NotBlank.message}")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
+    private LocalDateTime dateTime;
 
-    private final String description;
+    @NotBlank
+    @Size(min = 2, max = 120)
+    private String description;
 
-    private final int calories;
+    @NotNull(message = "{javax.validation.constraints.NotBlank.message}")
+    @Range(min = 10, max = 5000)
+    private Integer calories;
 
-    private final boolean excess;
+    private boolean excess;
+
+    public MealTo() {
+    }
 
     @ConstructorProperties({"id", "dateTime", "description", "calories", "excess"})
     public MealTo(Integer id, LocalDateTime dateTime, String description, int calories, boolean excess) {
@@ -21,6 +36,18 @@ public class MealTo extends BaseTo {
         this.description = description;
         this.calories = calories;
         this.excess = excess;
+    }
+
+    public void setDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setCalories(Integer calories) {
+        this.calories = calories;
     }
 
     public LocalDateTime getDateTime() {
@@ -44,7 +71,7 @@ public class MealTo extends BaseTo {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         MealTo mealTo = (MealTo) o;
-        return calories == mealTo.calories &&
+        return calories.equals(mealTo.calories) &&
                 excess == mealTo.excess &&
                 Objects.equals(id, mealTo.id) &&
                 Objects.equals(dateTime, mealTo.dateTime) &&
